@@ -3,6 +3,41 @@
   height: 40vmin;
   pointer-events: none;
 }
+.borard-container{
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #eee;
+}
+
+table,
+thead,
+tr,
+tbody,
+th,
+td {
+  text-align: center;
+}
+
+.table td {
+  text-align: center;
+  cursor: pointer;
+}
+
+.filled{
+  background: #eee;
+  pointer-events: none;
+}
+.m-l-md{
+  margin-left: 15px;
+}
+.m-t-md{
+  margin-top: 15px;
+}
+
+.poinnter{
+  cursor: pointer;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

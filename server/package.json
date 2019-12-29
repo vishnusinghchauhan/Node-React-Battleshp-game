@@ -5,12 +5,13 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon --experimental-modules server.js"
+    "start": "nodemon  --experimental-modules --es-module-specifier-resolution=node server.js"
   },
   "author": "Vishnu Singh",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "browserify": "^16.5.0",
     "cors": "^2.8.4",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",

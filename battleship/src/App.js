@@ -7,7 +7,7 @@ import store from './store/configureStore';
 import { Router } from 'react-router-dom';
 import history from "./history"
 import Routes from './routes';
-//import Header from './common/Header'
+import Header from './common/Header'
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
           <Provider store={store}>
             <Router history={history}>
                     <div>
+                        <Header />
                         <Routes />
                     </div>
             </Router>
