@@ -39,6 +39,26 @@ td {
   cursor: pointer;
 }
 
+.hirormiss{
+  display: block;
+    width: 40%;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #ccc;
+    /* margin-bottom: 20px; */
+    margin: 20px auto;
+    border-radius: 20px;
+}
+.notshipped{
+   background: red ;
+  pointer-events: none;
+}
+.shipped{
+  background: blue !important;
+    pointer-events: none;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

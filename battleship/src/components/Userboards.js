@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addDevice } from '../actions/Action';
+import { addDevice, addFireEvent } from '../actions/Action';
 
 class UserBoards extends Component {
     constructor() {
@@ -24,6 +24,7 @@ class UserBoards extends Component {
                 user2Added:0,
                 startGame: false,
                 board2Active : false,
+                hirormiss : ''
 
         };
         this.handleClickFor = this.handleClickFor.bind(this);
@@ -68,7 +69,7 @@ class UserBoards extends Component {
         name:device,
         user_id:brd._id
       }
-      console.log("uuuuuuuuuuuuuu", device, type, pos, obj)
+      //console.log("uuuuuuuuuuuuuu", device, type, pos, obj)
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
       if(brd.user_name == boardsArr[0].user_name){
         this.setState((prevState,) => ({ user1Added: prevState.user1Added + 1}));
@@ -102,7 +103,7 @@ class UserBoards extends Component {
            document.getElementById("1submarines").style.display = "none";
         }
       }
-      //console.log("addDevice....",boardsArr, obj)
+      console.log("addDevice....", obj)
       this.props.addDevice(obj);
     }
     onHover(event) {
@@ -110,13 +111,39 @@ class UserBoards extends Component {
         //console.log("test onHover", event.target)
     }
     staetGame(){
-        console.log("uuuuuuuuuuuuuuuuuu", this.state)
         this.setState({startGame:true, user1Added:0, user2Added:0})
+        var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
+        var secBoard = boardsArr[1]._id
+        document.getElementById(secBoard).classList.add("filled");
     }
-    fireEvent(){
-      console.log("RRRRRR")
+    fireEvent(brd){
+      var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
+      var secBoard = boardsArr[1]._id
+      var firBoard = boardsArr[0]._id
+      var inputVal = document.getElementById(brd.user_name).value;
+
+      console.log("@@@@@@@@@@@", inputVal, brd)
+      if(inputVal){
+          if(brd._id == boardsArr[0]._id){
+            document.getElementById(firBoard).classList.add("filled");
+            document.getElementById(secBoard).classList.remove("filled");
+          }else{
+            document.getElementById(firBoard).classList.remove("filled");
+            document.getElementById(secBoard).classList.add("filled");
+          }
+          var obj ={
+            fire:inputVal,user_id:brd._id, eventforid : brd._id
+          }
+          this.props.addFireEvent(obj);
+      }
     }
-    createTable = () => {
+
+    componentDidMount() {
+        //var fireEvent = this.props && this.props.userboards;
+        //this.setState( { hirormiss: fireEvent.fireboard})
+    }
+    createTable = (userId) => {
+      console.log("userIdcreate log..", userId)
       let table = []
       var boards = this.props && this.props.userboards && this.props.userboards.userBoards && this.props.userboards.userBoards[0].square_grid;
       var alphabet = "ABCDEFGHIJKL".split("");
@@ -126,7 +153,7 @@ class UserBoards extends Component {
           if(j == 0){
             children.push(<td>{`${alphabet[i]}`}</td>)
           }else{
-            children.push(<td onMouseOver={this.onHover}  onClick={this.handleClickFor} id={`${alphabet[i]}${j}`}> {`${alphabet[i]}${j}`} </td>)
+            children.push(<td onMouseOver={this.onHover}   onClick={this.handleClickFor} id={`${alphabet[i]}${j}`} className={`${alphabet[i]}${j}${userId}`}  userId > {`${alphabet[i]}${j}`} </td>)
           }
         }
         //Create the parent and add the children
@@ -138,12 +165,28 @@ class UserBoards extends Component {
 
     render() {
         var boards = this.props && this.props.userboards && this.props.userboards.userBoards;
-        console.log("RRRRRRRRRRRRRRRR", boards)
+        console.log("boardsboardsboards", boards)
+        
+
+         var fireaction = this.props && this.props.userboards && this.props.userboards.fireboard;
+         console.log("fireEventfireEvent", fireaction)
+
+  
+
+
         return (
            <div className="borard-container">
+      
             <div className="row">
+             <div className="hirormiss">
+                      <h1> {fireaction && fireaction.fire} </h1>
+                </div>
+              </div>
+
+            <div className="row">
+
              {boards.map((brd, index)=>(
-              <div className="col-sm-6">
+              <div className="col-sm-6" id={`${brd._id}`}>
                     <h3> {brd.user_name} </h3>
 
                       <table class="table table-bordered">
@@ -162,7 +205,7 @@ class UserBoards extends Component {
                               </tr>
                          </thead>
 
-                          {this.createTable()}
+                          {this.createTable(brd._id)}
                       </table>
             
                       <button type="button" id={`${index}battleship`}  onClick={()=>{this.addDevice(brd, 'battleship', "1", ['A1','A2'])}} className="btn btn-success m-l-md">Add Battleship</button>
@@ -175,12 +218,13 @@ class UserBoards extends Component {
                           <div className="col-auto">
                               <label className="sr-only" for="inlineFormInputGroup">Username</label>
                               <div className="input-group mb-2">
-                                <input type="text" className="form-control text-uppercase"  placeholder="A0" />
+                                <input type="text" className="form-control text-uppercase" id={`${brd.user_name}`}  placeholder="A0" />
                                 <div className="input-group-prepend">
                                   <div className="input-group-text poinnter" onClick={()=>{this.fireEvent(brd)}} >Fire</div>
                                 </div>
                               </div>
                           </div>
+                         
                     </div>
                     }
               </div>
@@ -203,7 +247,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    addDevice: (data) => dispatch(addDevice(data))
+    addDevice: (data) => dispatch(addDevice(data)),
+    addFireEvent: (data) => dispatch(addFireEvent(data))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserBoards);
