@@ -24,18 +24,22 @@ class UserBoards extends Component {
                 user2Added:0,
                 startGame: false,
                 board2Active : false,
-                hirormiss : ''
+                hirormiss : '',
+                selectedNodeId :''
 
         };
         this.handleClickFor = this.handleClickFor.bind(this);
         this.onHover = this.onHover.bind(this);
         this.staetGame = this.staetGame.bind(this);
-        this.fireEvent = this.fireEvent.bind(this);        
+        this.fireEvent = this.fireEvent.bind(this); 
+
+               
     }
     handleClickFor(event) {
         event.preventDefault();
         var element = document.getElementById(event.target.id);
-        console.log("Selection",element)
+        console.log("Selection",element.id)
+        this.setState({selectedNodeId: element.id})
         //element.classList.add("filled");
         //console.log("Selection",rowno,colno)
         /*if(this.state.horizontal && this.state.user1Completed == false){
@@ -69,7 +73,6 @@ class UserBoards extends Component {
         name:device,
         user_id:brd._id
       }
-      //console.log("uuuuuuuuuuuuuu", device, type, pos, obj)
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
       if(brd.user_name == boardsArr[0].user_name){
         this.setState((prevState,) => ({ user1Added: prevState.user1Added + 1}));
@@ -120,20 +123,28 @@ class UserBoards extends Component {
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
       var secBoard = boardsArr[1]._id
       var firBoard = boardsArr[0]._id
-      var inputVal = document.getElementById(brd.user_name).value;
+      var inputVal = this.state.selectedNodeId
 
-      console.log("@@@@@@@@@@@", inputVal, brd)
+      console.log("@@@@@@@@@@@ fireeeeeeee", this.state.selectedNodeId)
       if(inputVal){
+          var obj ={}
+          
           if(brd._id == boardsArr[0]._id){
+            obj.user_id= boardsArr[1]._id
+            obj.eventforid = boardsArr[0]._id
+            obj.current_user= boardsArr[0].user_name
             document.getElementById(firBoard).classList.add("filled");
             document.getElementById(secBoard).classList.remove("filled");
           }else{
+            obj.user_id= boardsArr[0]._id
+            obj.eventforid = boardsArr[1]._id
+            obj.current_user= boardsArr[1].user_name
             document.getElementById(firBoard).classList.remove("filled");
             document.getElementById(secBoard).classList.add("filled");
           }
-          var obj ={
-            fire:inputVal,user_id:brd._id, eventforid : brd._id
-          }
+          obj.fire=inputVal;
+          console.log("Fireing????", obj)
+          //user_id:brd._id, eventforid : brd._id
           this.props.addFireEvent(obj);
       }
     }
@@ -218,9 +229,8 @@ class UserBoards extends Component {
                           <div className="col-auto">
                               <label className="sr-only" for="inlineFormInputGroup">Username</label>
                               <div className="input-group mb-2">
-                                <input type="text" className="form-control text-uppercase" id={`${brd.user_name}`}  placeholder="A0" />
                                 <div className="input-group-prepend">
-                                  <div className="input-group-text poinnter" onClick={()=>{this.fireEvent(brd)}} >Fire</div>
+                                  <div className="input-group-text poinnter"  onClick={() => this.fireEvent(brd)}  >Fire</div>
                                 </div>
                               </div>
                           </div>

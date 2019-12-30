@@ -33,24 +33,40 @@ export const addDevice = (obj) => {
 export const addFireEvent = (obj) => {
     console.log("addFireEvent action", obj)
     var eventFor = obj.fire+obj.eventforid
-    //document.getElementById(eventFor).classList.add("notshipped");
-    var testarray = document.getElementsByClassName(eventFor);
-    for(var i = 0; i < testarray.length; i++)
-    {
-        testarray[i].className += " notshipped";
-    }
+    var current_user = obj.current_user
     return (dispatch) => {
         return axios.post(API_URL + 'addfire/', obj)
             .then((res) => {
                 console.log("response ", res);
-                var obj = {
-                    fire: res.data 
-                }
-                if(res && res.data){
-                    var test = document.getElementsByClassName(eventFor);
+               
+                var obj = { fire: current_user + " " + res.data }
+                var lastElement = res && res.data.split(" ")[1]
+                console.log("RRRRRRRRR0", lastElement)
+                var test = document.getElementsByClassName(eventFor);
+
+                if(lastElement == 'Hit'){
                     for(var j = 0; j < test.length; j++)
                     {
                         test[j].className += " shipped";
+                        test[j].innerText = "Hit";
+                    }
+                }else if(lastElement == 'Destroyed'){
+                     for(var k = 0; k < test.length; k++)
+                    {
+                        test[k].className += " shipped";
+                        test[k].innerText = "Hit";
+                    }
+                }  else if(lastElement == 'winner'){
+                     for(var k = 0; k < test.length; k++)
+                    {
+                        test[k].className += " shipped";
+                        test[k].innerText = "Hit";
+                    }
+                }else{
+                    for(var i = 0; i < test.length; i++)
+                    {
+                        test[i].className += " notshipped";
+                        test[i].innerText = "Miss";
                     }
                 }
                 dispatch({ type: FIRE_BOARD, payload: obj })
