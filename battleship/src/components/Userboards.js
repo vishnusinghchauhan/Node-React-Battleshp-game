@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addDevice, addFireEvent } from '../actions/Action';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 class UserBoards extends Component {
     constructor() {
@@ -9,31 +11,29 @@ class UserBoards extends Component {
                 isComplete1: false,
                 isComplete2: false,
                 horizontal:true,
-
-                battleship1:false,
-                cruisers1:false,
-                destroyers1:false,
-                submarines1:false,
-                user1Added:0,
-                board1Active : true,
-
-                battleship2:false,
-                cruisers2:false,
-                destroyers2:false,
-                submarines2:false,
+                // battleship1:false,
+                // cruisers1:false,
+                // destroyers1:false,
+                // submarines1:false,
+                // board1Active : true,
+                // battleship2:false,
+                // cruisers2:false,
+                // destroyers2:false,
+                // submarines2:false,
+                // board2Active : false,
                 user2Added:0,
+                user1Added:0,
                 startGame: false,
-                board2Active : false,
                 hirormiss : '',
-                selectedNodeId :''
+                selectedNodeId :'',
+                pushItemuserOne :[],
+                pushItemusertwo:[]
 
         };
         this.handleClickFor = this.handleClickFor.bind(this);
         this.onHover = this.onHover.bind(this);
         this.staetGame = this.staetGame.bind(this);
         this.fireEvent = this.fireEvent.bind(this); 
-
-               
     }
     handleClickFor(event) {
         event.preventDefault();
@@ -65,59 +65,166 @@ class UserBoards extends Component {
         }  */     
 
     }
-    addDevice(brd, device, type, pos){
+    
+    addDevice(brd, device, type, index){
+      console.log("yyyyyyyyyyyyyyyyyy", index)
       var obj = {
         direction:this.state.horizontal ? 'horizontal' : 'Vertical',
         type:type,
-        position:pos,
         name:device,
         user_id:brd._id
       }
+      let valueone = document.getElementById(index+"valueone").value;  
+      let valuetwo = document.getElementById(index+"valuetwo").value;
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
-      if(brd.user_name == boardsArr[0].user_name){
-        this.setState((prevState,) => ({ user1Added: prevState.user1Added + 1}));
-        if(device == 'battleship'){
-          document.getElementById("0battleship").style.display = "none";
-        }
-        if(device == 'cruisers'){
-           document.getElementById("0cruisers").style.display = "none";
 
-        }
-        if(device == 'destroyers'){
-           document.getElementById("0destroyers").style.display = "none";
-        }
-        if(device == 'submarines'){
-           document.getElementById("0submarines").style.display = "none";
-        }
-      }
-      if(brd.user_name == boardsArr[1].user_name){
-        this.setState((prevState,) => ({ user2Added: prevState.user2Added + 1}));
+      if(valueone && valuetwo){
+          console.log("AAAAAAAAAA", valueone, valuetwo) 
+          let shipArr = [];
+          if(this.state.horizontal){
+              let startone = valueone.split("")[0]
+              let endone = valueone.split("")[1]
+              let startwo = valuetwo.split("")[0]
+              let endtwo = valuetwo.split("")[1]
+              if(startone == startwo){
+                  for (var i = endone; i <= endtwo; i++) {
+                    var clsName = startone + endone++;
+                    shipArr.push(clsName)
+                  }
+                  obj.position = shipArr
+              }else{
+                toast.error("Please Slect horizontally only")
+              }
+            }else{
+                  let startone = valueone.split("")[0]
+                  let endone = valueone.split("")[1]
+                  let startwo = valuetwo.split("")[0]
+                  let endtwo = valuetwo.split("")[1]
+                  console.log("AAAAAAAAAYYYYYYYYYY")
+                  if(endone == endtwo){
+                        var alphabet = "ABCDEFGHIJKL";
+                        var startindex = alphabet.indexOf(startone);
+                        var endindex = alphabet.indexOf(startwo);
+                      for (var i = startindex; i <= endindex; i++) {
+                          var clsName =  alphabet.charAt(i) + endone
+                         shipArr.push(clsName)
+                      }
+                      obj.position = shipArr
+                  }else{
+                    toast.error("Please Slect Vertically only")
+                  }
+            }
+              if(brd.user_name == boardsArr[0].user_name){
+                this.setState((prevState,) => ({ user1Added: prevState.user1Added + 1}));
+                if(device == 'battleship' && shipArr.length > 0){
+                  document.getElementById("0battleship").style.display = "none";
+                }
+                if(device == 'cruisers' && shipArr.length > 0){
+                   document.getElementById("0cruisers").style.display = "none";
 
-        if(device == 'battleship'){
-          document.getElementById("1battleship").style.display = "none";
-        }
-        if(device == 'cruisers'){
-           document.getElementById("1cruisers").style.display = "none";
-        }
-        if(device == 'destroyers'){
-           document.getElementById("1destroyers").style.display = "none";
-        }
-        if(device == 'submarines'){
-           document.getElementById("1submarines").style.display = "none";
-        }
+                }
+                if(device == 'destroyers' && shipArr.length > 0){
+                   document.getElementById("0destroyers").style.display = "none";
+                }
+                if(device == 'submarines' && shipArr.length > 0){
+                   document.getElementById("0submarines").style.display = "none";
+                }
+              }
+              if(brd.user_name == boardsArr[1].user_name){
+                this.setState((prevState,) => ({ user2Added: prevState.user2Added + 1}));
+                if(device == 'battleship' && shipArr.length > 0){
+                  document.getElementById("1battleship").style.display = "none";
+                }
+                if(device == 'cruisers' && shipArr.length > 0){
+                   document.getElementById("1cruisers").style.display = "none";
+                }
+                if(device == 'destroyers' && shipArr.length > 0){
+                   document.getElementById("1destroyers").style.display = "none";
+                }
+                if(device == 'submarines' && shipArr.length > 0){
+                   document.getElementById("1submarines").style.display = "none";
+                }
+              }
+              if(shipArr.length > 0){
+                this.props.addDevice(obj);
+              }
+      }else{
+        toast.error("Please enter required values")
       }
-      console.log("addDevice....", obj)
-      this.props.addDevice(obj);
     }
     onHover(event) {
       //console.log("uuuuuuuuuuuuuuuuuu", this.state)
-        //console.log("test onHover", event.target)
+      //console.log("test onHover", event.target.id)
+      // var eventId = event.target.id
+      // eventId = eventId.split("");
+      // if(this.state.horizontal){
+      //     var eventType =  eventId[0]
+      //     var eventstart =  eventId[1]
+      //     var shipArr = [], loopcount = 0;
+      //     var deviceName = 'submarine'
+      //     if(deviceName == "submarine"){
+      //         loopcount = 5
+      //     }
+      //     for (var i = 0; i < loopcount; i++) {
+      //       var clsName = eventType + eventstart++;
+      //       if(eventstart <= 10){
+      //         shipArr.push(clsName)
+      //       }else{
+      //         shipArr =[]
+      //       }
+      //       if(i==loopcount-1){
+      //           console.log("addd",shipArr )
+      //       }else{
+      //           console.log("Not valie")
+      //          toast.error("Not valid")
+      //       }
+      //     }
+      // }
+      // if(!this.state.horizontal){
+      //     var eventType =  eventId[0]
+      //     var eventstart =  eventId[1]
+      //     console.log(eventType)
+      //     var alphabet = "ABCDEFGHIJKL";
+      //     var startindex = alphabet.indexOf(eventType);
+      //     var shipArr = [], loopcount = 0;
+      //     var deviceName = 'submarine'
+      //     if(deviceName == "submarine"){
+      //         loopcount = 5
+      //     }
+      //     for (var i = 0; i < loopcount; i++) {
+      //       var clsName = alphabet.charAt(startindex++)
+      //       clsName = clsName+eventstart
+      //       if(startindex <= 10){
+      //          shipArr.push(clsName)
+      //       }else{
+      //         shipArr =[]
+      //       }
+      //       if(i==loopcount-1){
+      //         console.log("addd",shipArr )
+      //       }else{
+      //         toast.error("Not valid")
+      //       }
+      //     }
+      // }
     }
     staetGame(){
+        // var selecteForUserOne = this.state.pushItemuserOne
+        // var selecteForUsertwo = this.state.pushItemusertwo;
+        // selecteForUserOne = [...new Set(selecteForUserOne)];
+        // selecteForUsertwo = [...new Set(selecteForUsertwo)];
+        // selecteForUserOne.forEach((item)=>{
+        //   console.log("1111111111111",item)
+        //   document.getElementById(item).classList.remove("filled");
+        // })
+        // selecteForUsertwo.forEach((item)=>{
+        //   console.log("222222222222222",item)
+        //   document.getElementById(item).classList.remove("filled");
+        // })
         this.setState({startGame:true, user1Added:0, user2Added:0})
         var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
         var secBoard = boardsArr[1]._id
-        document.getElementById(secBoard).classList.add("filled");
+        //document.getElementById(secBoard).classList.add("filled");
+        
     }
     fireEvent(brd){
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
@@ -153,6 +260,13 @@ class UserBoards extends Component {
         //var fireEvent = this.props && this.props.userboards;
         //this.setState( { hirormiss: fireEvent.fireboard})
     }
+    rotation = () =>{
+      this.setState( { horizontal : !this.state.horizontal})
+    }
+
+    notify = () => toast.error("Wow so easy !");
+
+
     createTable = (userId) => {
       console.log("userIdcreate log..", userId)
       let table = []
@@ -177,17 +291,13 @@ class UserBoards extends Component {
     render() {
         var boards = this.props && this.props.userboards && this.props.userboards.userBoards;
         console.log("boardsboardsboards", boards)
-        
 
          var fireaction = this.props && this.props.userboards && this.props.userboards.fireboard;
          console.log("fireEventfireEvent", fireaction)
 
-  
-
-
         return (
            <div className="borard-container">
-      
+            <ToastContainer />
             <div className="row">
              <div className="hirormiss">
                       <h1> {fireaction && fireaction.fire} </h1>
@@ -198,7 +308,7 @@ class UserBoards extends Component {
 
              {boards.map((brd, index)=>(
               <div className="col-sm-6" id={`${brd._id}`}>
-                    <h3> {brd.user_name} </h3>
+                    <h3> {brd.user_name}'s Board </h3>
 
                       <table class="table table-bordered">
                          <thead>
@@ -218,12 +328,31 @@ class UserBoards extends Component {
 
                           {this.createTable(brd._id)}
                       </table>
-            
-                      <button type="button" id={`${index}battleship`}  onClick={()=>{this.addDevice(brd, 'battleship', "1", ['A1','A2'])}} className="btn btn-success m-l-md">Add Battleship</button>
-                      <button type="button" id={`${index}cruisers`}  onClick={()=>{this.addDevice(brd, 'cruisers', "2", ['B3','B4','B5'])}} className="btn btn-success m-l-md">Add Cruisers</button>
-                      <button type="button" id={`${index}destroyers`}  onClick={()=>{this.addDevice(brd, 'destroyers', "3", ['C2', 'C3', 'C4', 'C5'])}} className="btn btn-success m-l-md">Add Destroyers</button>
-                      <button type="button" id={`${index}submarines`}  onClick={()=>{this.addDevice(brd, 'submarines', "4", ['F1', 'F2','F3', 'F4', 'F5'])}} className="btn btn-success m-l-md">Add Submarines</button>
+
               
+
+                    {this.state.startGame == false &&
+                      <div className="row addDevices">
+                     <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Start position</span>
+                      </div>
+                      <input type="text" class="form-control"  defaultValue="A1" id={`${index}valueone`}  />
+                      <div class="input-group-append">
+                        <span class="input-group-text">End Position</span>
+                      </div>
+                      <input type="text" class="form-control" defaultValue="A6" id={`${index}valuetwo`}  />
+                    </div> 
+                      <button  onClick={this.rotation}  className="btn btn-success m-t-md"> Add device {this.state.horizontal ? "horizontal" : "Vertiacal"}  </button>
+                    </div>
+                    }
+
+                      <button type="button" id={`${index}battleship`}  onClick={()=>{this.addDevice(brd, 'battleship', "1",  index)}} className="btn btn-success m-l-md">Add Battleship</button>
+                      <button type="button" id={`${index}cruisers`}  onClick={()=>{this.addDevice(brd, 'cruisers', "2" ,index)}} className="btn btn-success m-l-md">Add Cruisers</button>
+                      <button type="button" id={`${index}destroyers`}  onClick={()=>{this.addDevice(brd, 'destroyers', "3", index)}} className="btn btn-success m-l-md">Add Destroyers</button>
+                      <button type="button" id={`${index}submarines`}  onClick={()=>{this.addDevice(brd, 'submarines', "4", index)}} className="btn btn-success m-l-md">Add Submarines</button>
+              
+
                   {this.state.startGame &&
                     <div className="row">
                           <div className="col-auto">
@@ -237,6 +366,8 @@ class UserBoards extends Component {
                          
                     </div>
                     }
+
+
               </div>
               ))}
           </div>

@@ -11,7 +11,7 @@ import Header from './common/Header'
 
 function App() {
   return (
-    <div>
+    <div id="fullSection">
           <Provider store={store}>
             <Router history={history}>
                     <div>

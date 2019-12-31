@@ -25,9 +25,9 @@ class CreateBoard extends Component {
         var boards = this.props && this.props.userboards;
         console.log("RRRRRRRRRRRRRRRR", boards)
         return (
-            <div className="container">
+            <div className="borard-container">
            
-            	<form onSubmit={this.handleSubmit}>
+            	<form onSubmit={this.handleSubmit} >
             	<div className="row">
             		<div className="col-sm-6">
 		            <div className="form-group">

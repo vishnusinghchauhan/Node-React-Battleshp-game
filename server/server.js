@@ -47,6 +47,7 @@ app.post("/api/adduserboard/", function(req, res){
 	console.log("inserting........", req.body)
 	board.remove({},function(error,response){
 		if(error){
+			console.log("Errr", error)
 			return res.send(err);
 		}else{
 			var obj = req.body;
@@ -58,16 +59,15 @@ app.post("/api/adduserboard/", function(req, res){
 			})
 			board.insertMany( insertArr, function(err, result){
 				if(err){
+					console.log("Err", err)
 					return res.send(err);
 				}else{
+					console.log("succees", result)
 					return res.send(result);
 				}
 			})
 		}
 	})
-
-	
-
 
 })
 
@@ -80,13 +80,13 @@ app.post("/api/adddevice/", function(req, res){
         position:obj.position,
         name:obj.name
     }
-    board.updateOne( {  _id: obj.user_id },{  $addToSet: {  ships: savingObj  } }, function(err, result){
+    board.updateOne( {  _id: obj.user_id },{  $addToSet: {  ships: savingObj  } },{new:true}, function(err, result){
 		if(err){
 			console.log("Errr", err)
 			return res.send(err);
 		}else{
 			console.log("Success", result)
-			return res.send(result);
+			return res.send(savingObj);
 		}
 	})
 })
@@ -96,12 +96,21 @@ app.post("/api/addfire/", function(req, res,next){
 	console.log("fireing........", req.body)
 	var itemName = req.body.fire;
 
+// board.updateOne( {  _id: req.body.user_id },{  $push: { fired: itemName }}, function(fireErr, fireData){
+// 	if(fireErr){
+// 		console.log("Errer in push fireevent")
+// 	}
+// 	else{
+// 		console.log("Success  push fireevent")
+// 	}
+// })
+
+
 	board.findOne( {_id: req.body.user_id }, function(err,result){
 		if(err){
 			console.log("Err", err)
 			return res.send(result);
 		}else{
-
 			var shiopsArr = result.ships;
 			if(shiopsArr && shiopsArr.length > 0){
 				var returnObj = {}
@@ -109,7 +118,7 @@ app.post("/api/addfire/", function(req, res,next){
 			    shiopsArr.forEach((ship, idx)=>{
 					var  positions = ship.position
 					allElements = [...allElements, ...positions];
-					console.log("positions", ship.position)
+					console.log("positionserrr>>>>>>>>>", ship.position)
 					if(positions && positions.length > 0){
 						positions.forEach((pos, index)=>{
 							if(pos.toString() ==  itemName.toString()){
@@ -143,16 +152,9 @@ app.post("/api/addfire/", function(req, res,next){
 
 												})
 											})
-
-
-											
-											//console.log(`${ship.name} Destroyed`)
-											//res.end(`${ship.name} Destroyed`);
 										}else{
 											console.log(`${result.user_name} Hit`)
 											return res.send(` Hit`);
-											//console.log(`${result.user_name} Hit`)
-											//res.end(`${result.user_name} Hit`);
 										}
 									}
 								})
@@ -161,7 +163,10 @@ app.post("/api/addfire/", function(req, res,next){
 					}
 					if(shiopsArr.length-1 == idx){
 						var isExist = allElements.includes(itemName);
-						if(!isExist) return res.send(` Miss`);
+						if(!isExist){
+							console.log("missing")
+							return res.send(` Miss`);
+						} 
 					}
 				})
 				

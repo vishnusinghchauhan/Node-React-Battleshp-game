@@ -45,26 +45,24 @@ export const addFireEvent = (obj) => {
                 var test = document.getElementsByClassName(eventFor);
 
                 if(lastElement == 'Hit'){
-                    for(var j = 0; j < test.length; j++)
-                    {
+                    for(var j = 0; j < test.length; j++){
                         test[j].className += " shipped";
                         test[j].innerText = "Hit";
                     }
                 }else if(lastElement == 'Destroyed'){
-                     for(var k = 0; k < test.length; k++)
-                    {
+                     for(var k = 0; k < test.length; k++){
                         test[k].className += " shipped";
                         test[k].innerText = "Hit";
                     }
                 }  else if(lastElement == 'winner'){
-                     for(var k = 0; k < test.length; k++)
-                    {
+                     for(var k = 0; k < test.length; k++){
                         test[k].className += " shipped";
                         test[k].innerText = "Hit";
                     }
+                    var element = document.getElementById("fullSection");
+                    element.classList.add("endgame");
                 }else{
-                    for(var i = 0; i < test.length; i++)
-                    {
+                    for(var i = 0; i < test.length; i++){
                         test[i].className += " notshipped";
                         test[i].innerText = "Miss";
                     }
