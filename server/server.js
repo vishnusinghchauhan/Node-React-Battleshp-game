@@ -92,6 +92,7 @@ app.post("/api/adddevice/", function(req, res){
 })
 
 
+
 app.post("/api/addfire/", function(req, res,next){
 	console.log("fireing........", req.body)
 	var itemName = req.body.fire;

@@ -77,7 +77,8 @@ class UserBoards extends Component {
       let valueone = document.getElementById(index+"valueone").value;  
       let valuetwo = document.getElementById(index+"valuetwo").value;
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
-
+      valueone = valueone.toUpperCase();
+      valuetwo = valuetwo.toUpperCase();
       if(valueone && valuetwo){
           console.log("AAAAAAAAAA", valueone, valuetwo) 
           let shipArr = [];
@@ -87,11 +88,23 @@ class UserBoards extends Component {
               let startwo = valuetwo.split("")[0]
               let endtwo = valuetwo.split("")[1]
               if(startone == startwo){
-                  for (var i = endone; i <= endtwo; i++) {
-                    var clsName = startone + endone++;
-                    shipArr.push(clsName)
-                  }
-                  obj.position = shipArr
+                      let arrayItemuser1 = brd.user_name == boardsArr[0].user_name ? this.state.pushItemuserOne : this.state.pushItemusertwo
+                      arrayItemuser1 = [...new Set(arrayItemuser1)];
+                      let isDuplicate = false
+                        for (var i = endone; i <= endtwo; i++) {
+                            var clsName = startone + endone++;
+                            if (arrayItemuser1.indexOf(clsName) === -1) {
+                                shipArr.push(clsName)
+                            }
+                            else {
+                              isDuplicate = true
+                            }
+                            if(isDuplicate && i == endtwo){
+                              toast.error("Position is already added");
+                              shipArr = []
+                            }
+                        }
+                        obj.position = shipArr
               }else{
                 toast.error("Please Slect horizontally only")
               }
@@ -100,14 +113,25 @@ class UserBoards extends Component {
                   let endone = valueone.split("")[1]
                   let startwo = valuetwo.split("")[0]
                   let endtwo = valuetwo.split("")[1]
-                  console.log("AAAAAAAAAYYYYYYYYYY")
                   if(endone == endtwo){
-                        var alphabet = "ABCDEFGHIJKL";
-                        var startindex = alphabet.indexOf(startone);
-                        var endindex = alphabet.indexOf(startwo);
+                     let arrayItemuser2 = brd.user_name == boardsArr[0].user_name ? this.state.pushItemuserOne : this.state.pushItemusertwo
+                      arrayItemuser2 = [...new Set(arrayItemuser2)];
+                      let isDuplicate = false
+                      var alphabet = "ABCDEFGHIJKL";
+                      var startindex = alphabet.indexOf(startone);
+                      var endindex = alphabet.indexOf(startwo);
                       for (var i = startindex; i <= endindex; i++) {
                           var clsName =  alphabet.charAt(i) + endone
-                         shipArr.push(clsName)
+                            if (arrayItemuser2.indexOf(clsName) === -1) {
+                                shipArr.push(clsName)
+                            }
+                            else {
+                              isDuplicate = true
+                            }
+                            if(isDuplicate && i == endindex){
+                              toast.error("Position is already added");
+                              shipArr = []
+                            }
                       }
                       obj.position = shipArr
                   }else{
@@ -129,6 +153,20 @@ class UserBoards extends Component {
                 if(device == 'submarines' && shipArr.length > 0){
                    document.getElementById("0submarines").style.display = "none";
                 }
+                this.setState({ pushItemuserOne: [...this.state.pushItemuserOne, ...shipArr] }, function(){
+                    let arrayItem = this.state.pushItemuserOne;
+                    arrayItem = [...new Set(arrayItem)];
+                    if(arrayItem && arrayItem.length> 0 ){
+                         arrayItem.forEach((item)=>{
+                          let clasName = item+brd._id
+                          let d = document.getElementsByClassName(clasName)[0];
+                          var classExist =  d.className.split(" ");
+                          if(!classExist.includes("filled")){
+                            d.className += " filled";
+                          }
+                        }) 
+                    }
+                })
               }
               if(brd.user_name == boardsArr[1].user_name){
                 this.setState((prevState,) => ({ user2Added: prevState.user2Added + 1}));
@@ -144,6 +182,20 @@ class UserBoards extends Component {
                 if(device == 'submarines' && shipArr.length > 0){
                    document.getElementById("1submarines").style.display = "none";
                 }
+                this.setState({ pushItemusertwo: [...this.state.pushItemusertwo, ...shipArr] }, function(){
+                    let arrayItem = this.state.pushItemusertwo;
+                    arrayItem = [...new Set(arrayItem)];
+                    if(arrayItem && arrayItem.length> 0 ){
+                         arrayItem.forEach((item)=>{
+                          let clasName = item+brd._id
+                          let d = document.getElementsByClassName(clasName)[0];
+                          var classExist =  d.className.split(" ");
+                          if(!classExist.includes("filled")){
+                            d.className += " filled";
+                          }
+                        }) 
+                    }
+                })
               }
               if(shipArr.length > 0){
                 this.props.addDevice(obj);
@@ -208,23 +260,30 @@ class UserBoards extends Component {
       // }
     }
     staetGame(){
-        // var selecteForUserOne = this.state.pushItemuserOne
-        // var selecteForUsertwo = this.state.pushItemusertwo;
-        // selecteForUserOne = [...new Set(selecteForUserOne)];
-        // selecteForUsertwo = [...new Set(selecteForUsertwo)];
-        // selecteForUserOne.forEach((item)=>{
-        //   console.log("1111111111111",item)
-        //   document.getElementById(item).classList.remove("filled");
-        // })
-        // selecteForUsertwo.forEach((item)=>{
-        //   console.log("222222222222222",item)
-        //   document.getElementById(item).classList.remove("filled");
-        // })
-        this.setState({startGame:true, user1Added:0, user2Added:0})
+        var selecteForUserOne = this.state.pushItemuserOne
+        var selecteForUsertwo = this.state.pushItemusertwo;
+        selecteForUserOne = [...new Set(selecteForUserOne)];
+        selecteForUsertwo = [...new Set(selecteForUsertwo)];
         var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
+        selecteForUserOne.forEach((item)=>{
+          var className = item+boardsArr[0]._id
+          let d = document.getElementsByClassName(className)[0];
+          var classExist =  d.className.split(" ");
+          if(classExist.includes("filled")){
+            d.className = classExist[0];
+          }
+        })
+        selecteForUsertwo.forEach((item)=>{
+          var className = item+boardsArr[1]._id
+          let d = document.getElementsByClassName(className)[0];
+          var classExist =  d.className.split(" ");
+          if(classExist.includes("filled")){
+            d.className = classExist[0];
+          }
+        })
+        this.setState({startGame:true, user1Added:0, user2Added:0})
         var secBoard = boardsArr[1]._id
-        //document.getElementById(secBoard).classList.add("filled");
-        
+        document.getElementById(secBoard).classList.add("filled");
     }
     fireEvent(brd){
       var boardsArr = this.props && this.props.userboards && this.props.userboards.userBoards
@@ -268,7 +327,6 @@ class UserBoards extends Component {
 
 
     createTable = (userId) => {
-      console.log("userIdcreate log..", userId)
       let table = []
       var boards = this.props && this.props.userboards && this.props.userboards.userBoards && this.props.userboards.userBoards[0].square_grid;
       var alphabet = "ABCDEFGHIJKL".split("");
