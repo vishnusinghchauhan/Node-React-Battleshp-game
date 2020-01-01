@@ -1,5 +1,5 @@
 
-1) Gir clone https://github.com/vishnusinghchauhan/Node-React-Battleshp-game.git
+1) Git clone https://github.com/vishnusinghchauhan/Node-React-Battleshp-game.git
 
 2) got to battleshit
 
