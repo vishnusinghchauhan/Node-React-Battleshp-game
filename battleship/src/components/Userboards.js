@@ -101,12 +101,14 @@ class UserBoards extends Component {
                             }
                             if(isDuplicate && i == endtwo){
                               toast.error("Position is already added");
-                              shipArr = []
+                              shipArr = [];
+                              brd.user_name == boardsArr[0].user_name ? this.setState((prevState,) => ({ user1Added: prevState.user1Added - 1})) : this.setState((prevState,) => ({ user2Added: prevState.user2Added - 1}))
                             }
                         }
                         obj.position = shipArr
               }else{
                 toast.error("Please Slect horizontally only")
+                brd.user_name == boardsArr[0].user_name ? this.setState((prevState,) => ({ user1Added: prevState.user1Added - 1})) : this.setState((prevState,) => ({ user2Added: prevState.user2Added - 1}))
               }
             }else{
                   let startone = valueone.split("")[0]
@@ -131,11 +133,13 @@ class UserBoards extends Component {
                             if(isDuplicate && i == endindex){
                               toast.error("Position is already added");
                               shipArr = []
+                              brd.user_name == boardsArr[0].user_name ? this.setState((prevState,) => ({ user1Added: prevState.user1Added - 1})) : this.setState((prevState,) => ({ user2Added: prevState.user2Added - 1}))
                             }
                       }
                       obj.position = shipArr
                   }else{
                     toast.error("Please Slect Vertically only")
+                    brd.user_name == boardsArr[0].user_name ? this.setState((prevState,) => ({ user1Added: prevState.user1Added - 1})) : this.setState((prevState,) => ({ user2Added: prevState.user2Added - 1}))
                   }
             }
               if(brd.user_name == boardsArr[0].user_name){
@@ -428,9 +432,13 @@ class UserBoards extends Component {
 
               </div>
               ))}
+
+              {this.state.user2Added}
+              {this.state.user1Added}
           </div>
 
-          {boards &&  boards.length > 0 && this.state.user2Added == 4 && this.state.user1Added == 4 && 
+
+          {this.state.user2Added == 4 && this.state.user1Added == 4 && 
               <div className="row">
                <button type="button" onClick={this.staetGame} className="btn btn-success btn-lg m-t-md m-l-md"> Start  </button>
               </div>

@@ -10,7 +10,7 @@ export const addUserBoard = (users) => {
         return axios.post(API_URL + 'adduserboard/', users)
             .then((res) => {
                 console.log("response ", res);
-                dispatch({ type: ADD_BOARD, payload: res.data })
+                dispatch({ type: ADD_BOARD, payload: res.data.data })
                 history.push(`/userboards`)
             });
     }
@@ -39,8 +39,8 @@ export const addFireEvent = (obj) => {
             .then((res) => {
                 console.log("response ", res);
                
-                var obj = { fire: current_user + " " + res.data }
-                var lastElement = res && res.data.split(" ")[1]
+                var obj = { fire: current_user + " " + res.data.data}
+                var lastElement = res && res.data && res.data.data.split(" ")[1]
                 console.log("RRRRRRRRR0", lastElement)
                 var test = document.getElementsByClassName(eventFor);
 
@@ -49,7 +49,7 @@ export const addFireEvent = (obj) => {
                         test[j].className += " shipped";
                         test[j].innerText = "Hit";
                     }
-                }else if(lastElement == 'Destroyed'){
+                }else if(lastElement == 'sank'){
                      for(var k = 0; k < test.length; k++){
                         test[k].className += " shipped";
                         test[k].innerText = "Hit";
