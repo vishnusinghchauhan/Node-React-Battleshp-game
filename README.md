@@ -14,3 +14,6 @@ Opne new terminal window and  go to project folder
 6) npm install
 
 7) node server.js  or npm start
+
+![alt text](https://github.com/vishnusinghchauhan/Node-React-Battleshp-game/blob/master/game.png)
+
